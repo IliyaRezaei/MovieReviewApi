@@ -13,16 +13,21 @@ namespace MovieReviewApi.Repository
             _context = context;
         }
 
-        public bool CreateMovie(Movie model)
+        public bool Create(Movie model)
         {
             _context.Movies.Add(model);
             return Save();
         }
 
-        public bool DeleteMovie(Movie model)
+        public bool Delete(Movie model)
         {
             _context.Movies.Remove(model);
             return Save();
+        }
+
+        public List<Movie> GetAll()
+        {
+            return _context.Movies.ToList();
         }
 
         public Movie GetMovieById(int id)
@@ -33,11 +38,6 @@ namespace MovieReviewApi.Repository
         public Movie GetMovieByName(string name)
         {
             return _context.Movies.Where(x => x.Title == name).FirstOrDefault();
-        }
-
-        public List<Movie> GetMovies()
-        {
-            return _context.Movies.ToList();
         }
 
         public bool MovieExistById(int id)
@@ -56,10 +56,11 @@ namespace MovieReviewApi.Repository
             return result > 0 ? true : false;
         }
 
-        public bool UpdateMovie(Movie model)
+        public bool Update(Movie model)
         {
             _context.Movies.Update(model);
             return Save();
         }
+
     }
 }

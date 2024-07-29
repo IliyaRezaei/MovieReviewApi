@@ -20,7 +20,7 @@ namespace MovieReviewApi.Controllers
         [HttpGet]
         public ActionResult<List<MovieDto>> GetAll()
         {
-            return Ok(_movieRepository.GetMovies().ToDto());
+            return Ok(_movieRepository.GetAll().ToDto());
         }
 
         [HttpGet("byid/{id}")]
@@ -50,7 +50,7 @@ namespace MovieReviewApi.Controllers
             {
                 return BadRequest("Model is not valid");
             }
-            if (!_movieRepository.CreateMovie(dto.ToModel()))
+            if (!_movieRepository.Create(dto.ToModel()))
             {
                 return BadRequest("Something went wrong while saving the changes");
             }
@@ -69,7 +69,7 @@ namespace MovieReviewApi.Controllers
                 NotFound("Invalid Index");
             }
             dto.Id = id;
-            if (!_movieRepository.UpdateMovie(dto.ToModel()))
+            if (!_movieRepository.Update(dto.ToModel()))
             {
                 return BadRequest("Something went wrong while saving the changes");
             }
@@ -84,7 +84,7 @@ namespace MovieReviewApi.Controllers
             {
                 return NotFound("Invalid Index");
             }
-            if (!_movieRepository.DeleteMovie(movie))
+            if (!_movieRepository.Delete(movie))
             {
                 return BadRequest("Something went wrong while saving the changes");
             }

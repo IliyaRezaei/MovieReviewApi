@@ -23,7 +23,7 @@ namespace MovieReviewApi.Controllers
         [HttpGet]
         public ActionResult<List<GenreDto>> GetAll()
         {
-            return Ok(_genreRepository.GetGenres().ToDto());
+            return Ok(_genreRepository.GetAll().ToDto());
         }
 
         [HttpGet("byid/{id}")]
@@ -53,7 +53,7 @@ namespace MovieReviewApi.Controllers
             {
                 return BadRequest("Model is not valid");
             }
-            if (!_genreRepository.CreateGenre(dto.ToModel()))
+            if (!_genreRepository.Create(dto.ToModel()))
             {
                 return BadRequest("Something went wrong while saving the changes");
             }
@@ -72,7 +72,7 @@ namespace MovieReviewApi.Controllers
                 NotFound("Invalid Index");
             }
             dto.Id = id;
-            if (!_genreRepository.UpdateGenre(dto.ToModel()))
+            if (!_genreRepository.Update(dto.ToModel()))
             {
                 return BadRequest("Something went wrong while saving the changes");
             }
@@ -87,7 +87,7 @@ namespace MovieReviewApi.Controllers
             {
                 return NotFound("Invalid Index");
             }
-            if (!_genreRepository.DeleteGenre(genre))
+            if (!_genreRepository.Delete(genre))
             {
                 return BadRequest("Something went wrong while saving the changes");
             }

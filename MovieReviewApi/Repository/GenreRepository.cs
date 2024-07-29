@@ -16,11 +16,6 @@ namespace MovieReviewApi.Repository
             _context = context;
         }
 
-        public List<Genre> GetGenres()
-        {
-            return _context.Genres.ToList();
-        }
-
         public Genre GetGenreById(int id)
         {
             return _context.Genres.Where(x => x.Id == id).FirstOrDefault();
@@ -29,24 +24,6 @@ namespace MovieReviewApi.Repository
         public Genre GetGenreByName(string name)
         {
             return _context.Genres.Where(x=> x.Name == name).FirstOrDefault();
-        }
-
-        public bool CreateGenre(Genre model)
-        {
-            _context.Genres.Add(model);
-            return Save();
-        }
-
-        public bool DeleteGenre(Genre model)
-        {
-            _context.Remove(model);
-            return Save();
-        }
-
-        public bool UpdateGenre(Genre model)
-        {
-            _context.Update(model);
-            return Save();
         }
 
         public bool GenreExistById(int id)
@@ -65,6 +42,27 @@ namespace MovieReviewApi.Repository
             return result > 0 ? true : false;
         }
 
-        
+        public List<Genre> GetAll()
+        {
+            return _context.Genres.ToList();
+        }
+
+        public bool Create(Genre model)
+        {
+            _context.Genres.Add(model);
+            return Save();
+        }
+
+        public bool Update(Genre model)
+        {
+            _context.Update(model);
+            return Save();
+        }
+
+        public bool Delete(Genre model)
+        {
+            _context.Remove(model);
+            return Save();
+        }
     }
 }
