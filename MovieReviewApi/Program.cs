@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MovieReviewApi.Data;
+using MovieReviewApi.Interfaces;
+using MovieReviewApi.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration["ConnectionString:MovieReview"]));
+
+builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 
 var app = builder.Build();
 
