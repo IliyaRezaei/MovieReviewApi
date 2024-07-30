@@ -13,6 +13,7 @@ namespace MovieReviewApi.Data
         //I could merge actor and director and add a discriminator, but there is no term that cover them both 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<AccountUserRoles>().HasKey(x => new { x.UserId, x.RoleId});
             modelBuilder.Entity<AccountUser>().HasMany(x => x.Role).WithMany(x => x.User).UsingEntity<AccountUserRoles>();
 
             modelBuilder.Entity<MovieActor>().HasKey(x => new { x.MovieId, x.ActorId });
@@ -26,7 +27,6 @@ namespace MovieReviewApi.Data
         }
         public DbSet<AccountUser> AccountUsers { get; set; }
         public DbSet<AccountRole> AccountRoles { get; set; }
-        public DbSet<AccountUserRoles> AccountUserRoles { get; set; }
 
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Movie> Movies { get; set; }

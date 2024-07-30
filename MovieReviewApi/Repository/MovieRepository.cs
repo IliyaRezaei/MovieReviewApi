@@ -13,9 +13,16 @@ namespace MovieReviewApi.Repository
             _context = context;
         }
 
-        public bool Create(Movie model)
+        public bool Create(Movie model, int genreId)
         {
             _context.Movies.Add(model);
+            Genre genre = _context.Genres.Where(x=> x.Id == genreId).FirstOrDefault();
+            MovieGenre movieGenre = new MovieGenre 
+            {
+                Movie = model,
+                Genre = genre
+            };
+            _context.Add(movieGenre);
             return Save();
         }
 

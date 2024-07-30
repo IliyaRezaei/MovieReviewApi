@@ -4,9 +4,9 @@ namespace MovieReviewApi.Models.Account
 {
     public class AccountUserRoles
     {
-        [Key]
+        public int UserId { get; set; }
+        public int RoleId { get; set; }
         public AccountUser User { get; set; }
-        [Key]
         public AccountRole Role { get; set; }
     }
 }

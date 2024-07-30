@@ -66,15 +66,15 @@ namespace MovieReviewApi.Migrations
 
             modelBuilder.Entity("MovieReviewApi.Models.Account.AccountUserRoles", b =>
                 {
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("RoleId", "UserId");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("UserId");
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("AccountUserRoles");
                 });

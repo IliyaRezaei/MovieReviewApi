@@ -3,74 +3,64 @@ using Microsoft.AspNetCore.Mvc;
 using MovieReviewApi.Dto;
 using MovieReviewApi.Interfaces;
 using MovieReviewApi.Mappers;
+using MovieReviewApi.Repository;
 
 namespace MovieReviewApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MovieController : ControllerBase
+    public class ReviewController : ControllerBase
     {
-        private readonly IMovieRepository _movieRepository;
+        private readonly IReviewRepository _reviewRepository;
 
-        public MovieController(IMovieRepository movieRepository)
+        public ReviewController(IReviewRepository reviewRepository)
         {
-            _movieRepository = movieRepository;
+            _reviewRepository = reviewRepository;
         }
 
         [HttpGet]
-        public ActionResult<List<MovieDto>> GetAll()
+        public ActionResult<List<ReviewDto>> GetAll()
         {
-            return Ok(_movieRepository.GetAll().ToDto());
+            return Ok(_reviewRepository.GetAll().ToDto());
         }
 
         [HttpGet("byid/{id}")]
-        public ActionResult<MovieDto> GetById(int id)
+        public ActionResult<ReviewDto> GetById(int id)
         {
-            if (!_movieRepository.MovieExistById(id))
+            if (!_reviewRepository.ReviewExistById(id))
             {
                 return NotFound("Invalid Index");
             }
-            return _movieRepository.GetMovieById(id).ToDto();
-        }
-
-        [HttpGet("byname/{name}")]
-        public ActionResult<MovieDto> GetByName(string name)
-        {
-            if (!_movieRepository.MovieExistByName(name))
-            {
-                return NotFound("Invalid Name");
-            }
-            return _movieRepository.GetMovieByName(name).ToDto();
+            return _reviewRepository.GetReviewById(id).ToDto();
         }
 
         [HttpPost]
-        public IActionResult Create(MovieDto dto, int genreId)
+        public IActionResult Create(ReviewDto dto)
         {
             if (!ModelState.IsValid || dto.Id != 0)
             {
                 return BadRequest("Model is not valid");
             }
-            if (!_movieRepository.Create(dto.ToModel(),genreId))
+            if (!_reviewRepository.Create(dto.ToModel()))
             {
                 return BadRequest("Something went wrong while saving the changes");
             }
-            // url of the created object
             return Created("", "Successfully Created");
         }
 
         [HttpPut]
-        public IActionResult Update(int id, MovieDto dto)
+        public IActionResult Update(int id, ReviewDto dto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Model is not valid");
             }
-            if (_movieRepository.MovieExistById(id))
+            if (_reviewRepository.ReviewExistById(id))
             {
                 NotFound("Invalid Index");
             }
             dto.Id = id;
-            if (!_movieRepository.Update(dto.ToModel()))
+            if (!_reviewRepository.Update(dto.ToModel()))
             {
                 return BadRequest("Something went wrong while saving the changes");
             }
@@ -80,12 +70,12 @@ namespace MovieReviewApi.Controllers
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var movie = _movieRepository.GetMovieById(id);
+            var movie = _reviewRepository.GetReviewById(id);
             if (movie == null)
             {
                 return NotFound("Invalid Index");
             }
-            if (!_movieRepository.Delete(movie))
+            if (!_reviewRepository.Delete(movie))
             {
                 return BadRequest("Something went wrong while saving the changes");
             }
