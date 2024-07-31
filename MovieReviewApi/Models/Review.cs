@@ -1,6 +1,4 @@
-﻿using MovieReviewApi.Models.Account;
-
-namespace MovieReviewApi.Models
+﻿namespace MovieReviewApi.Models
 {
     public class Review
     {
@@ -8,7 +6,7 @@ namespace MovieReviewApi.Models
         public string Text { get; set; }
         public int Rating { get; set; }
         public DateTime PostDate { get; set; }
-        public AccountUser AccountUser { get; set; }
+        public User Reviewer { get; set; }
         public Movie Movie { get; set; }
     }
 }

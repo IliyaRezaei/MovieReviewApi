@@ -2,11 +2,11 @@
 
 namespace MovieReviewApi.Models.Account
 {
-    public class AccountUserRoles
+    public class UserRoles
     {
         public int UserId { get; set; }
         public int RoleId { get; set; }
-        public AccountUser User { get; set; }
-        public AccountRole Role { get; set; }
+        public User User { get; set; }
+        public Role Role { get; set; }
     }
 }

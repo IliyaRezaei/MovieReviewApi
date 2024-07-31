@@ -8,6 +8,6 @@ namespace MovieReviewApi.Models
         public int ActorId { get; set; }
 
         public Movie Movie { get; set; }
-        public Actor Actor { get; set; }
+        public Person Actor { get; set; }
     }
 }
