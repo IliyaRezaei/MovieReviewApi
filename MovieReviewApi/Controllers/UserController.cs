@@ -26,7 +26,7 @@ namespace MovieReviewApi.Controllers
             return Ok(_userRepository.GetAll().ToDto());
         }
 
-        [HttpGet("byid/{id}")]
+        [HttpGet("getById/{id}")]
         public ActionResult<UserDto> GetById(int id)
         {
             if (!_userRepository.UserExistById(id))
@@ -36,7 +36,7 @@ namespace MovieReviewApi.Controllers
             return _userRepository.GetUserById(id).ToDto();
         }
 
-        [HttpGet("byname/{name}")]
+        [HttpGet("getByName/{name}")]
         public ActionResult<UserDto> GetByName(string name)
         {
             if (!_userRepository.UserExistByName(name))
@@ -53,7 +53,7 @@ namespace MovieReviewApi.Controllers
             {
                 return BadRequest("Model is not valid");
             }
-            if (!_userRepository.Create(dto.ToModel(), roleId))
+            if (!_userRepository.Create(dto.ToModel()))
             {
                 return BadRequest("Something went wrong while saving the changes");
             }
@@ -93,5 +93,13 @@ namespace MovieReviewApi.Controllers
             }
             return NoContent();
         }
+
+        [HttpGet("GetUsersByRoleId/{roleId}")]
+        public ActionResult<List<UserDto>> GetUsersByRoleId(int roleId)
+        {
+            return _userRepository.GetUsersByRoleId(roleId).ToDto();
+        }
+
+        
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Humanizer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MovieReviewApi.Dto;
 using MovieReviewApi.Interfaces;
@@ -23,7 +24,8 @@ namespace MovieReviewApi.Controllers
             return Ok(_movieRepository.GetAll().ToDto());
         }
 
-        [HttpGet("byid/{id}")]
+        
+        [HttpGet("getById/{id}")]
         public ActionResult<MovieDto> GetById(int id)
         {
             if (!_movieRepository.MovieExistById(id))
@@ -33,7 +35,7 @@ namespace MovieReviewApi.Controllers
             return _movieRepository.GetMovieById(id).ToDto();
         }
 
-        [HttpGet("byname/{name}")]
+        [HttpGet("getByName/{name}")]
         public ActionResult<MovieDto> GetByName(string name)
         {
             if (!_movieRepository.MovieExistByName(name))
@@ -44,13 +46,13 @@ namespace MovieReviewApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(MovieDto dto, int genreId)
+        public IActionResult Create(MovieDto dto)
         {
             if (!ModelState.IsValid || dto.Id != 0)
             {
                 return BadRequest("Model is not valid");
             }
-            if (!_movieRepository.Create(dto.ToModel(),genreId))
+            if (!_movieRepository.Create(dto.ToModel()))
             {
                 return BadRequest("Something went wrong while saving the changes");
             }

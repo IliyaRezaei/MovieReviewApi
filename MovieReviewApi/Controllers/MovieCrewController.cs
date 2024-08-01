@@ -24,7 +24,7 @@ namespace MovieReviewApi.Controllers
             return Ok(_movieCrewRepository.GetAll().ToDto());
         }
 
-        [HttpGet("byid/{id}")]
+        [HttpGet("getById/{id}")]
         public ActionResult<PersonDto> GetById(int id)
         {
             if (!_movieCrewRepository.PersonExistById(id))
@@ -34,7 +34,7 @@ namespace MovieReviewApi.Controllers
             return _movieCrewRepository.GetPersonById(id).ToDto();
         }
 
-        [HttpGet("byname/{name}")]
+        [HttpGet("getByName/{name}")]
         public ActionResult<PersonDto> GetByName(string name)
         {
             //i can split string into two strings and see if the list contain the name or not if it does we retrieve it

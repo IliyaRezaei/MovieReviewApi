@@ -24,7 +24,7 @@ namespace MovieReviewApi.Controllers
             return Ok(_reviewRepository.GetAll().ToDto());
         }
 
-        [HttpGet("byid/{id}")]
+        [HttpGet("getById/{id}")]
         public ActionResult<ReviewDto> GetById(int id)
         {
             if (!_reviewRepository.ReviewExistById(id))
@@ -35,13 +35,14 @@ namespace MovieReviewApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(ReviewDto dto)
+        public IActionResult Create(ReviewDto dto, int userId)
         {
             if (!ModelState.IsValid || dto.Id != 0)
             {
                 return BadRequest("Model is not valid");
             }
-            if (!_reviewRepository.Create(dto.ToModel()))
+            //use jwt or cookie and user.identity to get name or id of the user
+            if (!_reviewRepository.Create(dto.ToModel(), userId))
             {
                 return BadRequest("Something went wrong while saving the changes");
             }

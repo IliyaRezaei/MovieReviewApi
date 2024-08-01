@@ -12,9 +12,12 @@ namespace MovieReviewApi.Repository
             _context = context;
         }
 
-        public bool Create(Review model)
+        public bool Create(Review model, int userId)
         {
+            var user = _context.Users.Where(u => u.Id == userId).FirstOrDefault();
+            user.Reviews.Add(model);
             _context.Reviews.Add(model);
+            
             return Save();
         }
 

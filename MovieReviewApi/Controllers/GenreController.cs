@@ -26,7 +26,7 @@ namespace MovieReviewApi.Controllers
             return Ok(_genreRepository.GetAll().ToDto());
         }
 
-        [HttpGet("byid/{id}")]
+        [HttpGet("getById/{id}")]
         public ActionResult<GenreDto> GetById(int id)
         {
             if (!_genreRepository.GenreExistById(id))
@@ -36,7 +36,7 @@ namespace MovieReviewApi.Controllers
             return _genreRepository.GetGenreById(id).ToDto();
         }
 
-        [HttpGet("byname/{name}")]
+        [HttpGet("getByName/{name}")]
         public ActionResult<GenreDto> GetByName(string name)
         {
             if (!_genreRepository.GenreExistByName(name)) 

@@ -1,7 +1,9 @@
-﻿using MovieReviewApi.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using MovieReviewApi.Data;
 using MovieReviewApi.Interfaces;
 using MovieReviewApi.Models;
 using MovieReviewApi.Models.Account;
+using System.Data;
 
 namespace MovieReviewApi.Repository
 {
@@ -14,11 +16,11 @@ namespace MovieReviewApi.Repository
             _context = context;
         }
 
-        public bool Create(User model, int roleId)
+        public bool Create(User model)
         {
             _context.Users.Add(model);
-            var role = _context.Roles.FirstOrDefault(x=> x.Id == roleId);
-            UserRoles userRole = new UserRoles
+            var role = _context.Roles.FirstOrDefault(x=> x.Name == "User");
+            UserRole userRole = new UserRole
             {
                 User = model,
                 Role = role
@@ -69,6 +71,11 @@ namespace MovieReviewApi.Repository
         {
             _context.Users.Update(model);
             return Save();
+        }
+
+        public List<User> GetUsersByRoleId(int roleId)
+        {
+            return _context.UserRoles.Where(p => p.Role.Id == roleId).Select(u=> u.User).ToList();
         }
     }
 }

@@ -2,6 +2,7 @@
 using MovieReviewApi.Data;
 using MovieReviewApi.Interfaces;
 using MovieReviewApi.Models;
+using MovieReviewApi.Models.Account;
 
 namespace MovieReviewApi.Repository
 {
@@ -64,5 +65,31 @@ namespace MovieReviewApi.Repository
             return Save();
         }
 
+        public List<Role> GetRolesOfAUser(int userId)
+        {
+            return _context.UserRoles.Where(x => x.User.Id == userId).Select(x => x.Role).ToList();
+        }
+
+        public bool AddRoleToUser(int userId, int roleId)
+        {
+            var user = _context.Users.Where(x=> x.Id == userId).FirstOrDefault();
+            var role = _context.Roles.Where(x => x.Id == roleId).FirstOrDefault();
+            UserRole userRole = new UserRole
+            {
+                User = user, 
+                Role = role
+            };
+
+            _context.UserRoles.Add(userRole);
+            return Save();
+        }
+
+        public bool RemoveRoleOfAUser(int userId, int roleId)
+        {
+            var userRole = _context.UserRoles.Where(x => x.RoleId == roleId && x.User.Id == userId).FirstOrDefault();
+            _context.UserRoles.Remove(userRole);
+
+            return Save();
+        }
     }
 }

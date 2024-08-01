@@ -13,13 +13,19 @@ namespace MovieReviewApi.Repository
             _context = context;
         }
 
-        public bool Create(Movie model, int genreId)
+        public bool Create(Movie model)
         {
             _context.Movies.Add(model);
-            Genre genre = _context.Genres.Where(x=> x.Id == genreId).FirstOrDefault();
-            MovieGenre movieGenre = new MovieGenre 
+            return Save();
+        }
+
+        public bool AddMovieGenre(int movieId, int genreId)
+        {
+            Movie movie = _context.Movies.Where(x => x.Id == movieId).FirstOrDefault();
+            Genre genre = _context.Genres.Where(x => x.Id == genreId).FirstOrDefault();
+            MovieGenre movieGenre = new MovieGenre
             {
-                Movie = model,
+                Movie = movie,
                 Genre = genre
             };
             _context.Add(movieGenre);
@@ -35,6 +41,11 @@ namespace MovieReviewApi.Repository
         public List<Movie> GetAll()
         {
             return _context.Movies.ToList();
+        }
+
+        public List<Genre> GetAllGenresOfAMovie(int movieId) 
+        {
+            return _context.MovieGenres.Where(x=> x.MovieId == movieId).Select(g => g.Genre).ToList();
         }
 
         public Movie GetMovieById(int id)
