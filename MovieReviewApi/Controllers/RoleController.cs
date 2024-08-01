@@ -97,6 +97,10 @@ namespace MovieReviewApi.Controllers
         [HttpGet("getRolesOfAUser/{userId}")]
         public ActionResult<List<RoleDto>> GetRolesOfAUser(int userId)
         {
+            if(!_userRepository.UserExistById(userId))
+            {
+                return BadRequest("Invalid Index");
+            }
             return _roleRepository.GetRolesOfAUser(userId).ToDto();
         }
 
@@ -105,7 +109,7 @@ namespace MovieReviewApi.Controllers
         {
             if (!_roleRepository.RoleExistById(roleId) && !_userRepository.UserExistById(userId))
             {
-                return BadRequest("Wrong Indexes");
+                return BadRequest("Invalid Indexes");
             }
             if(!_roleRepository.AddRoleToUser(userId, roleId))
             {
@@ -119,7 +123,7 @@ namespace MovieReviewApi.Controllers
         {
             if (!_roleRepository.RoleExistById(roleId) && !_userRepository.UserExistById(userId))
             {
-                return BadRequest("Wrong Indexes");
+                return BadRequest("Invalid Indexes");
             }
             if (!_roleRepository.RemoveRoleOfAUser(userId, roleId))
             {

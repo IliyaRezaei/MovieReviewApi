@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MovieReviewApi.Dto;
 using MovieReviewApi.Interfaces;
 using MovieReviewApi.Mappers;
+using MovieReviewApi.Models;
 using MovieReviewApi.Repository;
 
 namespace MovieReviewApi.Controllers
@@ -12,10 +13,11 @@ namespace MovieReviewApi.Controllers
     public class ReviewController : ControllerBase
     {
         private readonly IReviewRepository _reviewRepository;
-
-        public ReviewController(IReviewRepository reviewRepository)
+        private readonly IUserRepository _userRepository;
+        public ReviewController(IReviewRepository reviewRepository, IUserRepository userRepository)
         {
             _reviewRepository = reviewRepository;
+            _userRepository = userRepository;
         }
 
         [HttpGet]
@@ -35,14 +37,14 @@ namespace MovieReviewApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(ReviewDto dto, int userId)
+        public IActionResult Create(ReviewDto dto, int userId, int movieId)
         {
             if (!ModelState.IsValid || dto.Id != 0)
             {
                 return BadRequest("Model is not valid");
             }
             //use jwt or cookie and user.identity to get name or id of the user
-            if (!_reviewRepository.Create(dto.ToModel(), userId))
+            if (!_reviewRepository.Create(dto.ToModel(), userId, movieId))
             {
                 return BadRequest("Something went wrong while saving the changes");
             }
@@ -81,6 +83,16 @@ namespace MovieReviewApi.Controllers
                 return BadRequest("Something went wrong while saving the changes");
             }
             return NoContent();
+        }
+
+        [HttpGet("GetUserReviewsById/{userId}")]
+        public ActionResult<List<Review>> GetUserReviewsById(int userId)
+        {
+            if (!_userRepository.UserExistById(userId))
+            {
+                return BadRequest("Invalid Index");
+            }
+            return Ok(_reviewRepository.GetUserReviewsById(userId).ToDto());
         }
     }
 }
