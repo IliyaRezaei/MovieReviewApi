@@ -1,78 +1,75 @@
-﻿    using Humanizer;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MovieReviewApi.Data;
 using MovieReviewApi.Dto;
 using MovieReviewApi.Interfaces;
 using MovieReviewApi.Mappers;
-using MovieReviewApi.Models;
 
 namespace MovieReviewApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GenreController : ControllerBase
+    public class PersonController : ControllerBase
     {
-        private readonly IGenreRepository _genreRepository;
+        private readonly IPersonRepository _personRepository;
 
-        public GenreController(IGenreRepository genreRepository)
+        public PersonController(IPersonRepository personRepository)
         {
-            _genreRepository = genreRepository;
+            _personRepository = personRepository;
         }
 
         [HttpGet]
-        public ActionResult<List<GenreDto>> GetAll()
+        public ActionResult<List<PersonDto>> GetAll()
         {
-            return Ok(_genreRepository.GetAll().ToDto());
+            return Ok(_personRepository.GetAll().ToDto());
         }
 
         [HttpGet("getById/{id}")]
-        public ActionResult<GenreDto> GetById(int id)
+        public ActionResult<PersonDto> GetById(int id)
         {
-            if (!_genreRepository.GenreExistById(id))
+            if (!_personRepository.PersonExistById(id))
             {
                 return NotFound("Invalid Index");
             }
-            return _genreRepository.GetGenreById(id).ToDto();
+            return _personRepository.GetPersonById(id).ToDto();
         }
 
         [HttpGet("getByName/{name}")]
-        public ActionResult<GenreDto> GetByName(string name)
+        public ActionResult<PersonDto> GetByName(string name)
         {
-            if (!_genreRepository.GenreExistByName(name)) 
+            if (!_personRepository.PersonExistByName(name))
             {
                 return NotFound("Invalid Name");
             }
-            return _genreRepository.GetGenreByName(name).ToDto();
+            return _personRepository.GetPersonByName(name).ToDto();
         }
 
         [HttpPost]
-        public IActionResult Create(GenreDto dto)
+        public IActionResult Create(PersonDto dto)
         {
             if (!ModelState.IsValid || dto.Id != 0)
             {
                 return BadRequest("Model is not valid");
             }
-            if (!_genreRepository.Create(dto.ToModel()))
+            if (!_personRepository.Create(dto.ToModel()))
             {
                 return BadRequest("Something went wrong while saving the changes");
             }
-            return Created("","Successfully Created");
+            return Created("", "Successfully Created");
         }
 
         [HttpPut]
-        public IActionResult Update(int id, GenreDto dto)
+        public IActionResult Update(int id, PersonDto dto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Model is not valid");
             }
-            if (_genreRepository.GenreExistById(id))
+            if (_personRepository.PersonExistById(id))
             {
                 NotFound("Invalid Index");
             }
             dto.Id = id;
-            if (!_genreRepository.Update(dto.ToModel()))
+            if (!_personRepository.Update(dto.ToModel()))
             {
                 return BadRequest("Something went wrong while saving the changes");
             }
@@ -82,12 +79,12 @@ namespace MovieReviewApi.Controllers
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var genre = _genreRepository.GetGenreById(id);
-            if(genre == null)
+            var genre = _personRepository.GetPersonById(id);
+            if (genre == null)
             {
                 return NotFound("Invalid Index");
             }
-            if (!_genreRepository.Delete(genre))
+            if (!_personRepository.Delete(genre))
             {
                 return BadRequest("Something went wrong while saving the changes");
             }

@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using MovieReviewApi.Dto;
 using MovieReviewApi.Interfaces;
 using MovieReviewApi.Mappers;
+using MovieReviewApi.Models;
+using MovieReviewApi.Repository;
 
 namespace MovieReviewApi.Controllers
 {
@@ -12,10 +14,16 @@ namespace MovieReviewApi.Controllers
     public class MovieController : ControllerBase
     {
         private readonly IMovieRepository _movieRepository;
+        private readonly IGenreRepository _genreRepository;
+        private readonly IPersonRepository _personRepository;
 
-        public MovieController(IMovieRepository movieRepository)
+
+        public MovieController(IMovieRepository movieRepository, IGenreRepository genreRepository, IPersonRepository personRepository)
         {
+            _genreRepository = genreRepository;
             _movieRepository = movieRepository;
+            _personRepository = personRepository;
+
         }
 
         [HttpGet]
@@ -58,6 +66,48 @@ namespace MovieReviewApi.Controllers
             }
             // url of the created object
             return Created("", "Successfully Created");
+        }
+
+        [HttpPost("AddMovieGenre/")]
+        public IActionResult AddMovieGenre(int movieId, int genreId)
+        {
+            if (!_genreRepository.GenreExistById(genreId)) 
+            {
+                return NotFound("Invalid Index");
+            }
+            if(!_movieRepository.AddMovieGenre(movieId, genreId))
+            {
+                return BadRequest("Something went wrong while saving the changes");
+            }
+            return Created("", "genre successfully added to the movie");
+        }
+
+        [HttpPost("AddMovieActor/")]
+        public IActionResult AddMovieActor(int movieId, int actorId)
+        {
+            if (!_personRepository.PersonExistById(actorId))
+            {
+                return NotFound("Invalid Index");
+            }
+            if (!_movieRepository.AddMovieActor(movieId, actorId))
+            {
+                return BadRequest("Something went wrong while saving the changes");
+            }
+            return Created("", "actor successfully added to the movie");
+        }
+
+        [HttpPost("AddMovieDirector/")]
+        public IActionResult AddMovieDirector(int movieId, int directorId)
+        {
+            if (!_personRepository.PersonExistById(directorId))
+            {
+                return NotFound("Invalid Index");
+            }
+            if (!_movieRepository.AddMovieDirector(movieId, directorId))
+            {
+                return BadRequest("Something went wrong while saving the changes");
+            }
+            return Created("","director successfully added to the movie");
         }
 
         [HttpPut]

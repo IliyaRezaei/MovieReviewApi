@@ -19,18 +19,6 @@ namespace MovieReviewApi.Repository
             return Save();
         }
 
-        public bool AddMovieGenre(int movieId, int genreId)
-        {
-            Movie movie = _context.Movies.Where(x => x.Id == movieId).FirstOrDefault();
-            Genre genre = _context.Genres.Where(x => x.Id == genreId).FirstOrDefault();
-            MovieGenre movieGenre = new MovieGenre
-            {
-                Movie = movie,
-                Genre = genre
-            };
-            _context.Add(movieGenre);
-            return Save();
-        }
 
         public bool Delete(Movie model)
         {
@@ -80,5 +68,43 @@ namespace MovieReviewApi.Repository
             return Save();
         }
 
+        public bool AddMovieGenre(int movieId, int genreId)
+        {
+            Movie movie = _context.Movies.Where(x => x.Id == movieId).FirstOrDefault();
+            Genre genre = _context.Genres.Where(x => x.Id == genreId).FirstOrDefault();
+            MovieGenre movieGenre = new MovieGenre
+            {
+                Movie = movie,
+                Genre = genre
+            };
+            _context.MovieGenres.Add(movieGenre);
+            return Save();
+        }
+
+        public bool AddMovieActor(int movieId, int actorId)
+        {
+            Movie movie = _context.Movies.Where(x => x.Id == movieId).FirstOrDefault();
+            Person actor = _context.MovieCrew.Where(x => x.Id == actorId).FirstOrDefault();
+            MovieActor movieActor = new MovieActor 
+            { 
+                Movie = movie,
+                Actor = actor
+            };
+            _context.MovieActors.Add(movieActor);
+            return Save();
+        }
+
+        public bool AddMovieDirector(int movieId, int directorId)
+        {
+            Movie movie = _context.Movies.Where(x => x.Id == movieId).FirstOrDefault();
+            Person director = _context.MovieCrew.Where(x => x.Id == directorId).FirstOrDefault();
+            MovieDirector movieDirector = new MovieDirector
+            {
+                Movie = movie,
+                Director = director
+            };
+            _context.MovieDirectors.Add(movieDirector);
+            return Save();
+        }
     }
 }
