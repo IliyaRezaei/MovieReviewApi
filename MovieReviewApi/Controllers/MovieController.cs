@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MovieReviewApi.Dto;
+using MovieReviewApi.Helpers;
 using MovieReviewApi.Interfaces;
 using MovieReviewApi.Mappers;
 using MovieReviewApi.Models;
@@ -16,14 +17,18 @@ namespace MovieReviewApi.Controllers
         private readonly IMovieRepository _movieRepository;
         private readonly IGenreRepository _genreRepository;
         private readonly IPersonRepository _personRepository;
+        private readonly IUploadHandler _uploadHandler;
 
 
-        public MovieController(IMovieRepository movieRepository, IGenreRepository genreRepository, IPersonRepository personRepository)
+        public MovieController(IMovieRepository movieRepository, 
+            IGenreRepository genreRepository, 
+            IPersonRepository personRepository, 
+            IUploadHandler uploadHandler)
         {
             _genreRepository = genreRepository;
             _movieRepository = movieRepository;
             _personRepository = personRepository;
-
+            _uploadHandler = uploadHandler;
         }
 
         [HttpGet]
@@ -142,6 +147,28 @@ namespace MovieReviewApi.Controllers
                 return BadRequest("Something went wrong while saving the changes");
             }
             return NoContent();
+        }
+
+
+        [HttpPost("UploadMovieTrailer")]
+        [RequestSizeLimit(500 * 1024 * 1024)]
+        public IActionResult UploadMovieTrailer(IFormFile file, int movieId)
+        {
+            if (!_movieRepository.MovieExistById(movieId))
+            {
+                return NotFound("Invalid Index");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Model is not valid");
+            }
+            var movie = _movieRepository.GetMovieById(movieId);
+            var result = _uploadHandler.UploadMovieTrailer(file, movie);
+            if (!_movieRepository.Save())
+            {
+                return BadRequest("Something went wrong");
+            }
+            return Ok(result);
         }
     }
 }

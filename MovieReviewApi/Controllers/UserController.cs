@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Azure.Identity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MovieReviewApi.Dto;
+using MovieReviewApi.Helpers;
 using MovieReviewApi.Interfaces;
 using MovieReviewApi.Mappers;
 using MovieReviewApi.Repository;
@@ -13,11 +15,13 @@ namespace MovieReviewApi.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
-
-        public UserController(IUserRepository userRepository)
+        private readonly IUploadHandler _uploadHandler;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public UserController(IUserRepository userRepository, IUploadHandler uploadHandler, IWebHostEnvironment webHostEnvironment)
         {
-
             _userRepository = userRepository;
+            _uploadHandler = uploadHandler;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [HttpGet]
@@ -100,6 +104,24 @@ namespace MovieReviewApi.Controllers
             return _userRepository.GetUsersByRoleId(roleId).ToDto();
         }
 
-        
+        [HttpPost("UploadUserImage")]
+        public IActionResult UploadUserImage(IFormFile file, int userId)
+        {
+            if (!_userRepository.UserExistById(userId))
+            {
+                return NotFound("Invalid Index");
+            }
+            if (!ModelState.IsValid) 
+            {
+                return BadRequest("Model is not valid");
+            }
+            var user = _userRepository.GetUserById(userId);
+            var result = _uploadHandler.UploadUserImage(file, user);
+            if (!_userRepository.Save())
+            {
+                return BadRequest("Something went wrong");
+            }
+            return Ok(result);
+        }
     }
 }

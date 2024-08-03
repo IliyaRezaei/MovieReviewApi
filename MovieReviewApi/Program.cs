@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using MovieReviewApi.Data;
+using MovieReviewApi.Helpers;
 using MovieReviewApi.Interfaces;
 using MovieReviewApi.Repository;
 
@@ -20,7 +22,11 @@ builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMovieCrewRepository, MovieCrewRepository>();
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
+builder.Services.AddScoped<IUploadHandler, UploadHandler>();
 
+builder.Services.Configure<FormOptions>(options =>{
+    options.MultipartBodyLengthLimit = 500 * 1024 * 1024;
+});
 
 var app = builder.Build();
 

@@ -18,4 +18,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Uploads\Movie\" />
+    <Folder Include="wwwroot\Uploads\Person\" />
+    <Folder Include="wwwroot\Uploads\User\" />
+  </ItemGroup>
+
 </Project>
