@@ -13,11 +13,11 @@ namespace MovieReviewApi.Controllers
     public class PersonController : ControllerBase
     {
         private readonly IPersonRepository _personRepository;
-        private readonly IUploadHandler _uploadHandler;
-        public PersonController(IPersonRepository personRepository, IUploadHandler uploadHandler)
+        private readonly IImageUploadHandler _imageUploadHandler;
+        public PersonController(IPersonRepository personRepository, IImageUploadHandler imageUploadHandler)
         {
             _personRepository = personRepository;
-            _uploadHandler = uploadHandler;
+            _imageUploadHandler = imageUploadHandler;
         }
 
         [HttpGet]
@@ -106,12 +106,12 @@ namespace MovieReviewApi.Controllers
                 return BadRequest("Model is not valid");
             }
             var person = _personRepository.GetPersonById(personId);
-            var result = _uploadHandler.UploadPersonImage(file, person);
+            person.ImageUrl = _imageUploadHandler.UploadImage(file, person.Fullname);
             if (!_personRepository.Save())
             {
                 return BadRequest("Something went wrong");
             }
-            return Ok(result);
+            return Ok(person.ImageUrl);
         }
     }
 }

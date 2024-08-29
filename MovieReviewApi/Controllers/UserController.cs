@@ -15,12 +15,12 @@ namespace MovieReviewApi.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
-        private readonly IUploadHandler _uploadHandler;
+        private readonly IImageUploadHandler _imageUploadHandler;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public UserController(IUserRepository userRepository, IUploadHandler uploadHandler, IWebHostEnvironment webHostEnvironment)
+        public UserController(IUserRepository userRepository, IImageUploadHandler imageUploadHandler, IWebHostEnvironment webHostEnvironment)
         {
             _userRepository = userRepository;
-            _uploadHandler = uploadHandler;
+            _imageUploadHandler = imageUploadHandler;
             _webHostEnvironment = webHostEnvironment;
         }
 
@@ -116,12 +116,12 @@ namespace MovieReviewApi.Controllers
                 return BadRequest("Model is not valid");
             }
             var user = _userRepository.GetUserById(userId);
-            var result = _uploadHandler.UploadUserImage(file, user);
+            user.ImageUrl = _imageUploadHandler.UploadImage(file, user.Username);
             if (!_userRepository.Save())
             {
                 return BadRequest("Something went wrong");
             }
-            return Ok(result);
+            return Ok(user.ImageUrl);
         }
     }
 }

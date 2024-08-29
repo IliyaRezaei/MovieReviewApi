@@ -17,18 +17,18 @@ namespace MovieReviewApi.Controllers
         private readonly IMovieRepository _movieRepository;
         private readonly IGenreRepository _genreRepository;
         private readonly IPersonRepository _personRepository;
-        private readonly IUploadHandler _uploadHandler;
+        private readonly IVideoUploadHandler _videoUploadHandler;
 
 
         public MovieController(IMovieRepository movieRepository, 
             IGenreRepository genreRepository, 
-            IPersonRepository personRepository, 
-            IUploadHandler uploadHandler)
+            IPersonRepository personRepository,
+            IVideoUploadHandler videoUploadHandler)
         {
             _genreRepository = genreRepository;
             _movieRepository = movieRepository;
             _personRepository = personRepository;
-            _uploadHandler = uploadHandler;
+            _videoUploadHandler = videoUploadHandler;
         }
 
         [HttpGet]
@@ -163,12 +163,12 @@ namespace MovieReviewApi.Controllers
                 return BadRequest("Model is not valid");
             }
             var movie = _movieRepository.GetMovieById(movieId);
-            var result = _uploadHandler.UploadMovieTrailer(file, movie);
+            movie.MovieTrailerUrl = _videoUploadHandler.UploadMovie(file, movie.Title);
             if (!_movieRepository.Save())
             {
                 return BadRequest("Something went wrong");
             }
-            return Ok(result);
+            return Ok(movie.MovieTrailerUrl);
         }
     }
 }
