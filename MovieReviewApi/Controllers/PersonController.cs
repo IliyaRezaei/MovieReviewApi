@@ -1,14 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MovieReviewApi.Dto;
-using MovieReviewApi.Helpers;
 using MovieReviewApi.Interfaces;
 using MovieReviewApi.Mappers;
-using MovieReviewApi.Repository;
 
 namespace MovieReviewApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/people")]
     [ApiController]
     public class PersonController : ControllerBase
     {
@@ -26,8 +23,8 @@ namespace MovieReviewApi.Controllers
             return Ok(_personRepository.GetAll().ToDto());
         }
 
-        [HttpGet("getById/{id}")]
-        public ActionResult<PersonDto> GetById(int id)
+        [HttpGet("byId/{id}")]
+        public ActionResult<PersonDto> GetById([FromRoute] int id)
         {
             if (!_personRepository.PersonExistById(id))
             {
@@ -36,7 +33,7 @@ namespace MovieReviewApi.Controllers
             return _personRepository.GetPersonById(id).ToDto();
         }
 
-        [HttpGet("getByName/{name}")]
+        [HttpGet("byName/{name}")]
         public ActionResult<PersonDto> GetByName(string name)
         {
             if (!_personRepository.PersonExistByName(name))
@@ -60,8 +57,8 @@ namespace MovieReviewApi.Controllers
             return Created("", "Successfully Created");
         }
 
-        [HttpPut]
-        public IActionResult Update(int id, PersonDto dto)
+        [HttpPut("{id}")]
+        public IActionResult Update([FromRoute] int id, PersonDto dto)
         {
             if (!ModelState.IsValid)
             {
@@ -79,8 +76,8 @@ namespace MovieReviewApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete]
-        public IActionResult Delete(int id)
+        [HttpDelete("{id}")]
+        public IActionResult Delete([FromRoute] int id)
         {
             var genre = _personRepository.GetPersonById(id);
             if (genre == null)
@@ -94,7 +91,7 @@ namespace MovieReviewApi.Controllers
             return NoContent();
         }
 
-        [HttpPost("UploadPersonImage")]
+        [HttpPost("UploadImage")]
         public IActionResult UploadPersonImage(IFormFile file, int personId)
         {
             if (!_personRepository.PersonExistById(personId))
@@ -106,7 +103,7 @@ namespace MovieReviewApi.Controllers
                 return BadRequest("Model is not valid");
             }
             var person = _personRepository.GetPersonById(personId);
-            person.ImageUrl = _imageUploadHandler.UploadImage(file, person.Fullname);
+            person.ImageUrl = _imageUploadHandler.UploadImage(file, person.Fullname, Enums.ImageUploadType.Person);
             if (!_personRepository.Save())
             {
                 return BadRequest("Something went wrong");

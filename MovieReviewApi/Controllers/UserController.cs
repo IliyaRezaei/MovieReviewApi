@@ -1,16 +1,11 @@
-﻿using Azure.Identity;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MovieReviewApi.Dto;
-using MovieReviewApi.Helpers;
 using MovieReviewApi.Interfaces;
 using MovieReviewApi.Mappers;
-using MovieReviewApi.Repository;
 
 namespace MovieReviewApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/users")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -30,8 +25,8 @@ namespace MovieReviewApi.Controllers
             return Ok(_userRepository.GetAll().ToDto());
         }
 
-        [HttpGet("getById/{id}")]
-        public ActionResult<UserDto> GetById(int id)
+        [HttpGet("byId/{id}")]
+        public ActionResult<UserDto> GetById([FromRoute] int id)
         {
             if (!_userRepository.UserExistById(id))
             {
@@ -40,8 +35,8 @@ namespace MovieReviewApi.Controllers
             return _userRepository.GetUserById(id).ToDto();
         }
 
-        [HttpGet("getByName/{name}")]
-        public ActionResult<UserDto> GetByName(string name)
+        [HttpGet("byName/{name}")]
+        public ActionResult<UserDto> GetByName([FromRoute] string name)
         {
             if (!_userRepository.UserExistByName(name))
             {
@@ -51,7 +46,7 @@ namespace MovieReviewApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(UserDto dto, int roleId)
+        public IActionResult Create(UserDto dto)
         {
             if (!ModelState.IsValid || dto.Id != 0)
             {
@@ -64,8 +59,8 @@ namespace MovieReviewApi.Controllers
             return Created("", "Successfully Created");
         }
 
-        [HttpPut]
-        public IActionResult Update(int id, UserDto dto)
+        [HttpPut("{id}")]
+        public IActionResult Update([FromRoute] int id, UserDto dto)
         {
             if (!ModelState.IsValid)
             {
@@ -83,8 +78,8 @@ namespace MovieReviewApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete]
-        public IActionResult Delete(int id)
+        [HttpDelete("{id}")]
+        public IActionResult Delete([FromRoute] int id)
         {
             var genre = _userRepository.GetUserById(id);
             if (genre == null)
@@ -98,13 +93,13 @@ namespace MovieReviewApi.Controllers
             return NoContent();
         }
 
-        [HttpGet("GetUsersByRoleId/{roleId}")]
-        public ActionResult<List<UserDto>> GetUsersByRoleId(int roleId)
+        [HttpGet("byRoleId/{roleId}")]
+        public ActionResult<List<UserDto>> GetUsersByRoleId([FromRoute] int roleId)
         {
             return _userRepository.GetUsersByRoleId(roleId).ToDto();
         }
 
-        [HttpPost("UploadUserImage")]
+        [HttpPost("UploadImage")]
         public IActionResult UploadUserImage(IFormFile file, int userId)
         {
             if (!_userRepository.UserExistById(userId))
@@ -116,7 +111,7 @@ namespace MovieReviewApi.Controllers
                 return BadRequest("Model is not valid");
             }
             var user = _userRepository.GetUserById(userId);
-            user.ImageUrl = _imageUploadHandler.UploadImage(file, user.Username);
+            user.ImageUrl = _imageUploadHandler.UploadImage(file, user.Username, Enums.ImageUploadType.User);
             if (!_userRepository.Save())
             {
                 return BadRequest("Something went wrong");

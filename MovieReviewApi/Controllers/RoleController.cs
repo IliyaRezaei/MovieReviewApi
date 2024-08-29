@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MovieReviewApi.Dto;
 using MovieReviewApi.Interfaces;
 using MovieReviewApi.Mappers;
-using MovieReviewApi.Repository;
 
 namespace MovieReviewApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/roles")]
     [ApiController]
     public class RoleController : ControllerBase
     {
@@ -26,8 +24,8 @@ namespace MovieReviewApi.Controllers
             return Ok(_roleRepository.GetAll().ToDto());
         }
 
-        [HttpGet("getById/{id}")]
-        public ActionResult<RoleDto> GetById(int id)
+        [HttpGet("byId/{id}")]
+        public ActionResult<RoleDto> GetById([FromRoute] int id)
         {
             if (!_roleRepository.RoleExistById(id))
             {
@@ -36,8 +34,8 @@ namespace MovieReviewApi.Controllers
             return _roleRepository.GetRoleById(id).ToDto();
         }
 
-        [HttpGet("getByName/{name}")]
-        public ActionResult<RoleDto> GetByName(string name)
+        [HttpGet("byName/{name}")]
+        public ActionResult<RoleDto> GetByName([FromRoute] string name)
         {
             if (!_roleRepository.RoleExistByName(name))
             {
@@ -60,8 +58,8 @@ namespace MovieReviewApi.Controllers
             return Created("", "Successfully Created");
         }
 
-        [HttpPut]
-        public IActionResult Update(int id, RoleDto dto)
+        [HttpPut("{id}")]
+        public IActionResult Update([FromRoute] int id, RoleDto dto)
         {
             if (!ModelState.IsValid)
             {
@@ -79,8 +77,8 @@ namespace MovieReviewApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete]
-        public IActionResult Delete(int id)
+        [HttpDelete("{id}")]
+        public IActionResult Delete([FromRoute]int id)
         {
             var genre = _roleRepository.GetRoleById(id);
             if (genre == null)
@@ -92,44 +90,6 @@ namespace MovieReviewApi.Controllers
                 return BadRequest("Something went wrong while saving the changes");
             }
             return NoContent();
-        }
-
-        [HttpGet("getRolesOfAUser/{userId}")]
-        public ActionResult<List<RoleDto>> GetRolesOfAUser(int userId)
-        {
-            if(!_userRepository.UserExistById(userId))
-            {
-                return BadRequest("Invalid Index");
-            }
-            return _roleRepository.GetRolesOfAUser(userId).ToDto();
-        }
-
-        [HttpPost("addUserRole/{userId}/{roleId}")]
-        public IActionResult AddRoleToUser(int userId, int roleId)
-        {
-            if (!_roleRepository.RoleExistById(roleId) && !_userRepository.UserExistById(userId))
-            {
-                return BadRequest("Invalid Indexes");
-            }
-            if(!_roleRepository.AddRoleToUser(userId, roleId))
-            {
-                return BadRequest("Failed at saving(someone deleted it before)");
-            }
-            return Ok("Role Successfully added to user");
-        }
-
-        [HttpPost("removeUserRole/{userId}/{roleId}")]
-        public IActionResult RemoveRoleOfAUser(int userId, int roleId)
-        {
-            if (!_roleRepository.RoleExistById(roleId) && !_userRepository.UserExistById(userId))
-            {
-                return BadRequest("Invalid Indexes");
-            }
-            if (!_roleRepository.RemoveRoleOfAUser(userId, roleId))
-            {
-                return BadRequest("Failed at saving(someone deleted it before)");
-            }
-            return Ok("Role Successfully removed from user");
         }
     }
 }

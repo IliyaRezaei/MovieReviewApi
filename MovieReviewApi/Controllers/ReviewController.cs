@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MovieReviewApi.Dto;
 using MovieReviewApi.Interfaces;
 using MovieReviewApi.Mappers;
 using MovieReviewApi.Models;
-using MovieReviewApi.Repository;
 
 namespace MovieReviewApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/reviews")]
     [ApiController]
     public class ReviewController : ControllerBase
     {
@@ -26,8 +24,8 @@ namespace MovieReviewApi.Controllers
             return Ok(_reviewRepository.GetAll().ToDto());
         }
 
-        [HttpGet("getById/{id}")]
-        public ActionResult<ReviewDto> GetById(int id)
+        [HttpGet("byId/{id}")]
+        public ActionResult<ReviewDto> GetById([FromRoute] int id)
         {
             if (!_reviewRepository.ReviewExistById(id))
             {
@@ -37,7 +35,7 @@ namespace MovieReviewApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(ReviewDto dto, int userId, int movieId)
+        public IActionResult Create(ReviewDto dto, [FromQuery] int userId, [FromQuery] int movieId)
         {
             if (!ModelState.IsValid || dto.Id != 0)
             {
@@ -51,8 +49,8 @@ namespace MovieReviewApi.Controllers
             return Created("", "Successfully Created");
         }
 
-        [HttpPut]
-        public IActionResult Update(int id, ReviewDto dto)
+        [HttpPut("{id}")]
+        public IActionResult Update([FromRoute] int id, ReviewDto dto)
         {
             if (!ModelState.IsValid)
             {
@@ -70,8 +68,8 @@ namespace MovieReviewApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete]
-        public IActionResult Delete(int id)
+        [HttpDelete("{id}")]
+        public IActionResult Delete([FromRoute] int id)
         {
             var movie = _reviewRepository.GetReviewById(id);
             if (movie == null)
@@ -86,7 +84,7 @@ namespace MovieReviewApi.Controllers
         }
 
         [HttpGet("GetUserReviewsById/{userId}")]
-        public ActionResult<List<Review>> GetUserReviewsById(int userId)
+        public ActionResult<List<Review>> GetUserReviewsById([FromRoute] int userId)
         {
             if (!_userRepository.UserExistById(userId))
             {

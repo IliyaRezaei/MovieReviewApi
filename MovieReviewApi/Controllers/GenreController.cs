@@ -1,15 +1,11 @@
-﻿    using Humanizer;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using MovieReviewApi.Data;
+﻿using Microsoft.AspNetCore.Mvc;
 using MovieReviewApi.Dto;
 using MovieReviewApi.Interfaces;
 using MovieReviewApi.Mappers;
-using MovieReviewApi.Models;
 
 namespace MovieReviewApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/genres")]
     [ApiController]
     public class GenreController : ControllerBase
     {
@@ -26,8 +22,8 @@ namespace MovieReviewApi.Controllers
             return Ok(_genreRepository.GetAll().ToDto());
         }
 
-        [HttpGet("getById/{id}")]
-        public ActionResult<GenreDto> GetById(int id)
+        [HttpGet("byId/{id}")]
+        public ActionResult<GenreDto> GetById([FromRoute] int id)
         {
             if (!_genreRepository.GenreExistById(id))
             {
@@ -36,8 +32,8 @@ namespace MovieReviewApi.Controllers
             return _genreRepository.GetGenreById(id).ToDto();
         }
 
-        [HttpGet("getByName/{name}")]
-        public ActionResult<GenreDto> GetByName(string name)
+        [HttpGet("byName/{name}")]
+        public ActionResult<GenreDto> GetByName([FromRoute] string name)
         {
             if (!_genreRepository.GenreExistByName(name)) 
             {
@@ -60,8 +56,8 @@ namespace MovieReviewApi.Controllers
             return Created("","Successfully Created");
         }
 
-        [HttpPut]
-        public IActionResult Update(int id, GenreDto dto)
+        [HttpPut("{id}")]
+        public IActionResult Update([FromRoute] int id, GenreDto dto)
         {
             if (!ModelState.IsValid)
             {
@@ -79,8 +75,8 @@ namespace MovieReviewApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete]
-        public IActionResult Delete(int id)
+        [HttpDelete("{id}")]
+        public IActionResult Delete([FromRoute]int id)
         {
             var genre = _genreRepository.GetGenreById(id);
             if(genre == null)

@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MovieReviewApi.Dto;
 using MovieReviewApi.Interfaces;
 using MovieReviewApi.Mappers;
-using MovieReviewApi.Repository;
 
 namespace MovieReviewApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/crew")]
     [ApiController]
     public class MovieCrewController : ControllerBase
     {
@@ -24,8 +22,8 @@ namespace MovieReviewApi.Controllers
             return Ok(_movieCrewRepository.GetAll().ToDto());
         }
 
-        [HttpGet("getById/{id}")]
-        public ActionResult<PersonDto> GetById(int id)
+        [HttpGet("byId/{id}")]
+        public ActionResult<PersonDto> GetById([FromRoute] int id)
         {
             if (!_movieCrewRepository.PersonExistById(id))
             {
@@ -34,8 +32,8 @@ namespace MovieReviewApi.Controllers
             return _movieCrewRepository.GetPersonById(id).ToDto();
         }
 
-        [HttpGet("getByName/{name}")]
-        public ActionResult<PersonDto> GetByName(string name)
+        [HttpGet("byName/{name}")]
+        public ActionResult<PersonDto> GetByName([FromRoute] string name)
         {
             //i can split string into two strings and see if the list contain the name or not if it does we retrieve it
             if (!_movieCrewRepository.PersonExistByName(name))
@@ -60,8 +58,8 @@ namespace MovieReviewApi.Controllers
             return Created("", "Successfully Created");
         }
 
-        [HttpPut]
-        public IActionResult Update(int id, PersonDto dto)
+        [HttpPut("{id}")]
+        public IActionResult Update([FromRoute] int id, PersonDto dto)
         {
             if (!ModelState.IsValid)
             {
@@ -79,8 +77,8 @@ namespace MovieReviewApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete]
-        public IActionResult Delete(int id)
+        [HttpDelete("{id}")]
+        public IActionResult Delete([FromRoute] int id)
         {
             var movie = _movieCrewRepository.GetPersonById(id);
             if (movie == null)

@@ -1,5 +1,6 @@
 ﻿using Elfie.Serialization;
 using Microsoft.AspNetCore.Mvc;
+using MovieReviewApi.Enums;
 using MovieReviewApi.Interfaces;
 using MovieReviewApi.Models;
 
@@ -7,7 +8,7 @@ namespace MovieReviewApi.Helpers
 {
     public class ImageUploadHandler : IImageUploadHandler
     {
-        public string UploadImage(IFormFile file, string username)
+        public string UploadImage(IFormFile file, string username, ImageUploadType type)
         {
             List<string> validExtensions = new List<string>
             {
@@ -27,7 +28,7 @@ namespace MovieReviewApi.Helpers
             }
 
             string fileName = username + extension;
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads", "User");
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads", type.ToString());
 
             using (FileStream stream = new FileStream(Path.Combine(path, fileName), FileMode.Create))
             {

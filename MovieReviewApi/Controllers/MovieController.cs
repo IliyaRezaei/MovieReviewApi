@@ -1,16 +1,11 @@
-﻿using Humanizer;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MovieReviewApi.Dto;
-using MovieReviewApi.Helpers;
 using MovieReviewApi.Interfaces;
 using MovieReviewApi.Mappers;
-using MovieReviewApi.Models;
-using MovieReviewApi.Repository;
 
 namespace MovieReviewApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/movies")]
     [ApiController]
     public class MovieController : ControllerBase
     {
@@ -38,8 +33,8 @@ namespace MovieReviewApi.Controllers
         }
 
         
-        [HttpGet("getById/{id}")]
-        public ActionResult<MovieDto> GetById(int id)
+        [HttpGet("byId/{id}")]
+        public ActionResult<MovieDto> GetById([FromRoute] int id)
         {
             if (!_movieRepository.MovieExistById(id))
             {
@@ -48,8 +43,8 @@ namespace MovieReviewApi.Controllers
             return _movieRepository.GetMovieById(id).ToDto();
         }
 
-        [HttpGet("getByName/{name}")]
-        public ActionResult<MovieDto> GetByName(string name)
+        [HttpGet("byName/{name}")]
+        public ActionResult<MovieDto> GetByName([FromRoute] string name)
         {
             if (!_movieRepository.MovieExistByName(name))
             {
@@ -73,8 +68,8 @@ namespace MovieReviewApi.Controllers
             return Created("", "Successfully Created");
         }
 
-        [HttpPost("AddMovieGenre/")]
-        public IActionResult AddMovieGenre(int movieId, int genreId)
+        [HttpPost("genre/")]
+        public IActionResult AddMovieGenre([FromQuery]int movieId, [FromQuery] int genreId)
         {
             if (!_genreRepository.GenreExistById(genreId)) 
             {
@@ -88,7 +83,7 @@ namespace MovieReviewApi.Controllers
         }
 
         [HttpPost("AddMovieActor/")]
-        public IActionResult AddMovieActor(int movieId, int actorId)
+        public IActionResult AddMovieActor([FromQuery] int movieId, [FromQuery] int actorId)
         {
             if (!_personRepository.PersonExistById(actorId))
             {
@@ -102,7 +97,7 @@ namespace MovieReviewApi.Controllers
         }
 
         [HttpPost("AddMovieDirector/")]
-        public IActionResult AddMovieDirector(int movieId, int directorId)
+        public IActionResult AddMovieDirector([FromQuery] int movieId, [FromQuery] int directorId)
         {
             if (!_personRepository.PersonExistById(directorId))
             {
@@ -115,8 +110,8 @@ namespace MovieReviewApi.Controllers
             return Created("","director successfully added to the movie");
         }
 
-        [HttpPut]
-        public IActionResult Update(int id, MovieDto dto)
+        [HttpPut("{id}")]
+        public IActionResult Update([FromRoute] int id, MovieDto dto)
         {
             if (!ModelState.IsValid)
             {
@@ -134,8 +129,8 @@ namespace MovieReviewApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete]
-        public IActionResult Delete(int id)
+        [HttpDelete("{id}")]
+        public IActionResult Delete([FromRoute] int id)
         {
             var movie = _movieRepository.GetMovieById(id);
             if (movie == null)
@@ -150,7 +145,7 @@ namespace MovieReviewApi.Controllers
         }
 
 
-        [HttpPost("UploadMovieTrailer")]
+        [HttpPost("UploadTrailer")]
         [RequestSizeLimit(500 * 1024 * 1024)]
         public IActionResult UploadMovieTrailer(IFormFile file, int movieId)
         {
