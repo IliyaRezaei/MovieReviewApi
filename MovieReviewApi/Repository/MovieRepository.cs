@@ -1,4 +1,5 @@
-﻿using MovieReviewApi.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using MovieReviewApi.Data;
 using MovieReviewApi.Interfaces;
 using MovieReviewApi.Models;
 
@@ -29,6 +30,11 @@ namespace MovieReviewApi.Repository
         public List<Movie> GetAll()
         {
             return _context.Movies.ToList();
+        }
+
+        public List<Movie> getAllWithCrew()
+        {
+            return _context.Movies.Include(x=> x.MovieCrew).ToList();
         }
 
         public List<Genre> GetAllGenresOfAMovie(int movieId) 

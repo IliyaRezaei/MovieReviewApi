@@ -2,6 +2,7 @@
 using MovieReviewApi.Dto;
 using MovieReviewApi.Interfaces;
 using MovieReviewApi.Mappers;
+using MovieReviewApi.Models;
 
 namespace MovieReviewApi.Controllers
 {
@@ -15,8 +16,8 @@ namespace MovieReviewApi.Controllers
         private readonly IVideoUploadHandler _videoUploadHandler;
 
 
-        public MovieController(IMovieRepository movieRepository, 
-            IGenreRepository genreRepository, 
+        public MovieController(IMovieRepository movieRepository,
+            IGenreRepository genreRepository,
             IPersonRepository personRepository,
             IVideoUploadHandler videoUploadHandler)
         {
@@ -30,6 +31,37 @@ namespace MovieReviewApi.Controllers
         public ActionResult<List<MovieDto>> GetAll()
         {
             return Ok(_movieRepository.GetAll().ToDto());
+        }
+
+        [HttpGet("shorts")]
+        public ActionResult<List<MovieDto>> GetAllShorts()
+        {
+            return Ok(_movieRepository.GetAll().Where(x => x.LengthInMinutes < 25).ToList().ToDto());
+        }
+
+        [HttpGet("getByCrew/{name}")]
+        public ActionResult<List<MovieDto>> GetAllByPerson([FromRoute] string name)
+        {
+            List<Movie> movies = _movieRepository.getAllWithCrew();
+            List<Movie> chosen = new();
+            foreach(Movie movie in movies)
+            {
+                foreach(Person person in movie.MovieCrew)
+                {
+                    if(person.Fullname == name)
+                    {
+                        chosen.Add(movie);
+                        break;
+                    }
+                }
+            }
+            return Ok(chosen.ToDto());
+        }
+
+        [HttpGet("inYear/{year}")]
+        public ActionResult<List<MovieDto>> GetAllInYear([FromRoute]int year)
+        {
+            return Ok(_movieRepository.GetAll().Where(x => x.ReleaseDate.Year == year).ToList().ToDto()); 
         }
 
         
