@@ -22,7 +22,8 @@ builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMovieCrewRepository, MovieCrewRepository>();
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
-builder.Services.AddScoped<IUploadHandler, UploadHandler>();
+builder.Services.AddScoped<IImageUploadHandler, ImageUploadHandler>();
+builder.Services.AddScoped<IVideoUploadHandler, VideoUploadHandler>();
 
 builder.Services.Configure<FormOptions>(options =>{
     options.MultipartBodyLengthLimit = 500 * 1024 * 1024;
