@@ -12,7 +12,7 @@ A place where you can find movies that match your taste, talk to strangers about
 |-------------------------------------------------|---------------------------------------|---------------------------------------------------------------|-----------------------------------------------------------------------------|
 | Getting the list of movies by year, actor or... | Getting Genre by id and their names   | Getting All the Actors and Directors by id and their names    | Getting All the Actors and Directors by id and their names                  |
 | Adding movie with it's genres, cast and crew    | CRUD Operation                        | CRUD Operation                                                | Adding actor or director, one Person Entity can be both actor and director  |
-| Uploading Movie Trailer to it's intended folder |                                       | Upload image of actor or director into their intended folder  | Upload image of actor or director into their intended folder                |
+| Uploading Movie Trailer to it's intended folder |                                       | Upload image of actor or director into their intended folder  |                                                                             |   
 
 Admins will have their own dashboard to view everything and perform all kinds of operations on the Entities.
 
@@ -20,7 +20,7 @@ Admins will have their own dashboard to view everything and perform all kinds of
 
 There is no Authentication or Authorization with cookie or jwt with Identity even though i know how they work and how to implement and configure them, but i want to make my own simple authentication.
 
-User will be able to Register and Login, have dashboard to change their properties, view and review movies, view cast and crew of the movie, view Movies that one actor or director have been part of and so on...
+User will be able to Register and Login, have dashboard to change their properties, uploade profile picture, view and review movies, view cast and crew of the movie, view Movies that one actor or director have been part of and so on...
 
 
 ## Startup
